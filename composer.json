@@ -1,0 +1,16 @@
+{
+    "name": "sugatech/momo-sdk-laravel",
+    "type": "library",
+    "description": "Momo service SDK for Laravel and Lumen",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.2",
+        "guzzlehttp/guzzle": "^6.3",
+        "illuminate/support": "~5.3|^6.0",
+        "illuminate/config": "~5.3|^6.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0"
+    }
+}
