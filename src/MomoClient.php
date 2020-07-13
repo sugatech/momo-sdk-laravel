@@ -2,7 +2,6 @@
 
 namespace Momo\SDK;
 
-use Illuminate\Support\Arr;
 use PassportClientCredentials\OAuthClient;
 use Zttp\PendingZttpRequest;
 use Zttp\Zttp;
@@ -60,5 +59,47 @@ class MomoClient
     private function getUrl($route)
     {
         return $this->apiUrl . '/api/client/v1' . $route;
+    }
+
+    /**
+     * @param $partnerRefId
+     * @param $token
+     * @param $amout
+     * @param $phoneNumber
+     * @param $userId
+     * @return bool
+     */
+    public function authorize($partnerRefId, $token, $amout, $userId, $phoneNumber)
+    {
+        $param = [
+            'partner_ref_id' => $partnerRefId,
+            'token' => $token,
+            'amount' => $amout,
+            'user_id' => $userId,
+            'phone_number' => $phoneNumber,
+        ];
+
+        return $this->request(function (PendingZttpRequest $request) use ($param) {
+            return $request->asJson()
+                ->post($this->getUrl('/payment/app/authorize'), $param);
+        })
+            ->isSuccess();
+    }
+
+    /**
+     * @param $transId
+     * @return bool
+     */
+    public function capture($transId)
+    {
+        $param = [
+            'trans_id' => $transId
+        ];
+
+        return $this->request(function (PendingZttpRequest $request) use ($param) {
+            return $request->asJson()
+                ->post($this->getUrl('/payment/app/capture'), $param);
+        })
+            ->isSuccess();
     }
 }
