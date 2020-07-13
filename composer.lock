@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "91b7bfba6f385d47264c11b6695f2545",
+    "content-hash": "6344ea932eed4788d96d2ff7f0f8cf17",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -750,6 +750,42 @@
             ],
             "description": "A polyfill for getallheaders.",
             "time": "2019-03-08T08:55:37+00:00"
+        },
+        {
+            "name": "sugatech/oauth2-client-credentials-laravel",
+            "version": "20.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sugatech/oauth2-client-credentials-laravel.git",
+                "reference": "d349284e704841736fe9e8f00d08981cf4e7147e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sugatech/oauth2-client-credentials-laravel/zipball/d349284e704841736fe9e8f00d08981cf4e7147e",
+                "reference": "d349284e704841736fe9e8f00d08981cf4e7147e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/config": "~5.3|^6.0|^7.0",
+                "illuminate/support": "~5.3|^6.0|^7.0",
+                "kitetail/zttp": "^0.6.0",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "OAuth2ClientCredentials\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Oauth2 client credentials for laravel and lumen",
+            "time": "2020-05-26T04:19:56+00:00"
         },
         {
             "name": "symfony/polyfill-intl-idn",
