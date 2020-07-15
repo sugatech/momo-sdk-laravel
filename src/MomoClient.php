@@ -2,7 +2,7 @@
 
 namespace Momo\SDK;
 
-use PassportClientCredentials\OAuthClient;
+use OAuth2ClientCredentials\OAuthClient;
 use Zttp\PendingZttpRequest;
 use Zttp\Zttp;
 use Zttp\ZttpResponse;
