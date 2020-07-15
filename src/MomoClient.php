@@ -65,9 +65,9 @@ class MomoClient
      * @param $partnerRefId
      * @param $token
      * @param $amout
-     * @param $phoneNumber
      * @param $userId
-     * @return bool
+     * @param $phoneNumber
+     * @return mixed
      */
     public function authorize($partnerRefId, $token, $amout, $userId, $phoneNumber)
     {
@@ -83,12 +83,12 @@ class MomoClient
             return $request->asJson()
                 ->post($this->getUrl('/payment/app/authorize'), $param);
         })
-            ->isSuccess();
+            ->json();
     }
 
     /**
      * @param $transId
-     * @return bool
+     * @return mixed
      */
     public function capture($transId)
     {
@@ -100,6 +100,6 @@ class MomoClient
             return $request->asJson()
                 ->post($this->getUrl('/payment/app/capture'), $param);
         })
-            ->isSuccess();
+            ->json();
     }
 }
