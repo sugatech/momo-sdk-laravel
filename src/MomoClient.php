@@ -85,8 +85,7 @@ class MomoClient
         });
 
         if (!$response->isSuccess()) {
-            return response()
-                ->json(false);
+            return false;
         }
 
         return $response->json();
@@ -108,8 +107,7 @@ class MomoClient
         });
 
         if (!$response->isSuccess()) {
-            return response()
-                ->json(false);
+            return false;
         }
 
         return $response->json();
