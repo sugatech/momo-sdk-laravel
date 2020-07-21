@@ -67,7 +67,7 @@ class MomoClient
      * @param $amout
      * @param $userId
      * @param $phoneNumber
-     * @return mixed
+     * @return array | bool
      */
     public function authorize($partnerRefId, $token, $amout, $userId, $phoneNumber)
     {
@@ -93,7 +93,7 @@ class MomoClient
 
     /**
      * @param $transId
-     * @return mixed
+     * @return array | bool
      */
     public function capture($transId)
     {
