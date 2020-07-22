@@ -67,7 +67,7 @@ class MomoClient
      * @param $amout
      * @param $userId
      * @param $phoneNumber
-     * @return mixed
+     * @return array | bool
      */
     public function authorize($partnerRefId, $token, $amout, $userId, $phoneNumber)
     {
@@ -79,16 +79,21 @@ class MomoClient
             'phone_number' => $phoneNumber,
         ];
 
-        return $this->request(function (PendingZttpRequest $request) use ($param) {
+        $response = $this->request(function (PendingZttpRequest $request) use ($param) {
             return $request->asJson()
                 ->post($this->getUrl('/payment/app/authorize'), $param);
-        })
-            ->json();
+        });
+
+        if (!$response->isSuccess()) {
+            return false;
+        }
+
+        return $response->json();
     }
 
     /**
      * @param $transId
-     * @return mixed
+     * @return array | bool
      */
     public function capture($transId)
     {
@@ -96,10 +101,15 @@ class MomoClient
             'trans_id' => $transId
         ];
 
-        return $this->request(function (PendingZttpRequest $request) use ($param) {
+        $response = $this->request(function (PendingZttpRequest $request) use ($param) {
             return $request->asJson()
                 ->post($this->getUrl('/payment/app/capture'), $param);
-        })
-            ->json();
+        });
+
+        if (!$response->isSuccess()) {
+            return false;
+        }
+
+        return $response->json();
     }
 }
