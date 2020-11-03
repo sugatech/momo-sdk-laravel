@@ -2,10 +2,10 @@
 
 namespace Momo\SDK;
 
+use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http;
 use OAuth2ClientCredentials\OAuthClient;
-use Zttp\PendingZttpRequest;
-use Zttp\Zttp;
-use Zttp\ZttpResponse;
 
 class MomoClient
 {
@@ -34,11 +34,12 @@ class MomoClient
 
     /**
      * @param callable $handler
-     * @return ZttpResponse
+     * @return Response
+     * @throws \Illuminate\Http\Client\RequestException
      */
     private function request($handler)
     {
-        $request = Zttp::withHeaders([
+        $request = Http::withHeaders([
             'Authorization' => 'Bearer ' . $this->oauthClient->getAccessToken(),
         ])
             ->withoutVerifying();
@@ -64,27 +65,28 @@ class MomoClient
     /**
      * @param $partnerRefId
      * @param $token
-     * @param $amout
+     * @param $amount
      * @param $userId
      * @param $phoneNumber
      * @return array | bool
+     * @throws \Illuminate\Http\Client\RequestException
      */
-    public function authorize($partnerRefId, $token, $amout, $userId, $phoneNumber)
+    public function authorize($partnerRefId, $token, $amount, $userId, $phoneNumber)
     {
         $param = [
             'partner_ref_id' => $partnerRefId,
             'token' => $token,
-            'amount' => $amout,
+            'amount' => $amount,
             'user_id' => $userId,
             'phone_number' => $phoneNumber,
         ];
 
-        $response = $this->request(function (PendingZttpRequest $request) use ($param) {
+        $response = $this->request(function (PendingRequest $request) use ($param) {
             return $request->asJson()
                 ->post($this->getUrl('/payment/app/authorize'), $param);
         });
 
-        if (!$response->isSuccess()) {
+        if (!$response->successful()) {
             return false;
         }
 
@@ -94,6 +96,7 @@ class MomoClient
     /**
      * @param $transId
      * @return array | bool
+     * @throws \Illuminate\Http\Client\RequestException
      */
     public function capture($transId)
     {
@@ -101,12 +104,12 @@ class MomoClient
             'trans_id' => $transId
         ];
 
-        $response = $this->request(function (PendingZttpRequest $request) use ($param) {
+        $response = $this->request(function (PendingRequest $request) use ($param) {
             return $request->asJson()
                 ->post($this->getUrl('/payment/app/capture'), $param);
         });
 
-        if (!$response->isSuccess()) {
+        if (!$response->successful()) {
             return false;
         }
 
