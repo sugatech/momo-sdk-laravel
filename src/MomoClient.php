@@ -68,7 +68,7 @@ class MomoClient
      * @param $amount
      * @param $userId
      * @param $phoneNumber
-     * @return int | bool
+     * @return array | bool
      * @throws \Illuminate\Http\Client\RequestException
      */
     public function authorize($partnerRefId, $token, $amount, $userId, $phoneNumber)
@@ -95,7 +95,7 @@ class MomoClient
 
     /**
      * @param $paymentId
-     * @return bool
+     * @return array | bool
      * @throws \Illuminate\Http\Client\RequestException
      */
     public function capture($paymentId)
