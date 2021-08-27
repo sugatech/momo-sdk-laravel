@@ -68,7 +68,7 @@ class MomoClient
      * @param $amount
      * @param $userId
      * @param $phoneNumber
-     * @return array | bool
+     * @return int | bool
      * @throws \Illuminate\Http\Client\RequestException
      */
     public function authorize($partnerRefId, $token, $amount, $userId, $phoneNumber)
@@ -94,19 +94,15 @@ class MomoClient
     }
 
     /**
-     * @param $transId
-     * @return array | bool
+     * @param $paymentId
+     * @return bool
      * @throws \Illuminate\Http\Client\RequestException
      */
-    public function capture($transId)
+    public function capture($paymentId)
     {
-        $param = [
-            'trans_id' => $transId
-        ];
-
-        $response = $this->request(function (PendingRequest $request) use ($param) {
+        $response = $this->request(function (PendingRequest $request) use ($paymentId) {
             return $request->asJson()
-                ->post($this->getUrl('/payment/app/capture'), $param);
+                ->post($this->getUrl('/payment/app/capture/' . $paymentId));
         });
 
         if (!$response->successful()) {
