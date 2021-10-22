@@ -71,7 +71,7 @@ class MomoClient
      * @return array | bool
      * @throws \Illuminate\Http\Client\RequestException
      */
-    public function authorize($partnerRefId, $token, $amount, $userId, $phoneNumber)
+    public function authorizeAppInApp($partnerRefId, $token, $amount, $userId, $phoneNumber)
     {
         $param = [
             'partner_ref_id' => $partnerRefId,
@@ -98,11 +98,110 @@ class MomoClient
      * @return array | bool
      * @throws \Illuminate\Http\Client\RequestException
      */
-    public function capture($paymentId)
+    public function captureAppInApp($paymentId)
     {
         $response = $this->request(function (PendingRequest $request) use ($paymentId) {
             return $request->asJson()
                 ->post($this->getUrl('/payment/app/capture/' . $paymentId));
+        });
+
+        if (!$response->successful()) {
+            return false;
+        }
+
+        return $response->json();
+    }
+
+    /**
+     * @param int $userId
+     * @param int $amount
+     * @param string $orderId
+     * @param string $redirectUrl
+     * @param string $ipnUrl
+     * @return array|false|mixed
+     * @throws \Illuminate\Http\Client\RequestException
+     */
+    public function createAllInOne($userId, $amount, $orderId, $redirectUrl, $ipnUrl)
+    {
+        $params = [
+            'user_id' => $userId,
+            'amount' => $amount,
+            'order_info' => $orderId,
+            'redirect_url' => $redirectUrl,
+            'ipn_url' => $ipnUrl,
+        ];
+
+        $response = $this->request(function (PendingRequest $request) use ($params) {
+            return $request->asJson()
+                ->post($this->getUrl('/payment/aio/create'), $params);
+        });
+
+        if (!$response->successful()) {
+            return false;
+        }
+
+        return $response->json();
+    }
+
+    /**
+     * @param int $userId
+     * @param array $params
+     * @return array|false|mixed
+     * @throws \Illuminate\Http\Client\RequestException
+     */
+    public function authorizeAllInOne($userId, $params)
+    {
+        $params = [
+            'user_id' => $userId,
+            'partner_code' => $params['partnerCode'] ?? null,
+            'order_id' => $params['orderId'] ?? null,
+            'request_id' => $params['requestId'] ?? null,
+            'amount' => $params['amount'] ?? null,
+            'order_info' => $params['orderInfo'] ?? null,
+            'order_type' => $params['orderType'] ?? null,
+            'transaction_id' => $params['transId'] ?? null,
+            'result_code' => $params['resultCode'] ?? null,
+            'message' => $params['message'] ?? null,
+            'pay_type' => $params['payType'] ?? null,
+            'response_time' => $params['responseTime'] ?? null,
+            'extra_data' => $params['extraData'] ?? '',
+            'signature' => $params['signature'] ?? null,
+        ];
+
+        $response = $this->request(function (PendingRequest $request) use ($params) {
+            return $request->asJson()
+                ->post($this->getUrl('/payment/aio/authorize'), $params);
+        });
+
+        if (!$response->successful()) {
+            return false;
+        }
+
+        return $response->json();
+    }
+
+    /**
+     * @param int $userId
+     * @param string $partnerCode
+     * @param string $requestId
+     * @param string $orderId
+     * @param int $amount
+     * @return array|false|mixed
+     * @throws \Illuminate\Http\Client\RequestException
+     */
+    public function captureAllInOne($userId, $partnerCode, $requestId, $orderId, $amount)
+    {
+        $params = [
+            'user_id' => $userId,
+            'partner_code' => $partnerCode,
+            'request_id' => $requestId,
+            'order_id' => $orderId,
+            'amount' => $amount,
+        ];
+
+        $response = $this->request(function (PendingRequest $request) use ($params) {
+            return $request->asJson()
+                ->post($this->getUrl('/payment/aio/capture'), $params);
         });
 
         if (!$response->successful()) {
