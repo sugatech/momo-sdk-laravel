@@ -1,6 +1,6 @@
 {
     "name": "sugatech/momo-sdk-laravel",
-    "version": "20.1.2",
+    "version": "20.2.0",
     "type": "library",
     "description": "Momo service SDK for Laravel and Lumen",
     "license": "MIT",
