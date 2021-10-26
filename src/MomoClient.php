@@ -63,72 +63,22 @@ class MomoClient
     }
 
     /**
-     * @param $partnerRefId
-     * @param $token
-     * @param $amount
-     * @param $userId
-     * @param $phoneNumber
-     * @return array | bool
-     * @throws \Illuminate\Http\Client\RequestException
-     */
-    public function authorizeAppInApp($partnerRefId, $token, $amount, $userId, $phoneNumber)
-    {
-        $param = [
-            'partner_ref_id' => $partnerRefId,
-            'token' => $token,
-            'amount' => $amount,
-            'user_id' => $userId,
-            'phone_number' => $phoneNumber,
-        ];
-
-        $response = $this->request(function (PendingRequest $request) use ($param) {
-            return $request->asJson()
-                ->post($this->getUrl('/payment/app/authorize'), $param);
-        });
-
-        if (!$response->successful()) {
-            return false;
-        }
-
-        return $response->json();
-    }
-
-    /**
-     * @param $paymentId
-     * @return array | bool
-     * @throws \Illuminate\Http\Client\RequestException
-     */
-    public function captureAppInApp($paymentId)
-    {
-        $response = $this->request(function (PendingRequest $request) use ($paymentId) {
-            return $request->asJson()
-                ->post($this->getUrl('/payment/app/capture/' . $paymentId));
-        });
-
-        if (!$response->successful()) {
-            return false;
-        }
-
-        return $response->json();
-    }
-
-    /**
-     * @param int $userId
-     * @param int $amount
      * @param string $orderId
+     * @param int $amount
+     * @param string $orderInfo
      * @param string $redirectUrl
-     * @param string $ipnUrl
+     * @param string|null $ipnUrl
      * @return array|false|mixed
      * @throws \Illuminate\Http\Client\RequestException
      */
-    public function createAllInOne($userId, $amount, $orderId, $redirectUrl, $ipnUrl)
+    public function createAllInOne($orderId, $amount, $orderInfo, $redirectUrl, $ipnUrl = null)
     {
         $params = [
-            'user_id' => $userId,
+            'order_id' => $orderId,
             'amount' => $amount,
-            'order_info' => $orderId,
+            'order_info' => $orderInfo,
             'redirect_url' => $redirectUrl,
-            'ipn_url' => $ipnUrl,
+            'ipn_url' => $ipnUrl ?: config('momo.aio.ipn_url'),
         ];
 
         $response = $this->request(function (PendingRequest $request) use ($params) {
@@ -144,15 +94,13 @@ class MomoClient
     }
 
     /**
-     * @param int $userId
      * @param array $params
      * @return array|false|mixed
      * @throws \Illuminate\Http\Client\RequestException
      */
-    public function authorizeAllInOne($userId, $params)
+    public function ipnAllInOne($params)
     {
         $params = [
-            'user_id' => $userId,
             'partner_code' => $params['partnerCode'] ?? null,
             'order_id' => $params['orderId'] ?? null,
             'request_id' => $params['requestId'] ?? null,
@@ -170,7 +118,7 @@ class MomoClient
 
         $response = $this->request(function (PendingRequest $request) use ($params) {
             return $request->asJson()
-                ->post($this->getUrl('/payment/aio/authorize'), $params);
+                ->post($this->getUrl('/payment/aio/ipn'), $params);
         });
 
         if (!$response->successful()) {
@@ -181,20 +129,16 @@ class MomoClient
     }
 
     /**
-     * @param int $userId
      * @param string $partnerCode
-     * @param string $requestId
      * @param string $orderId
      * @param int $amount
      * @return array|false|mixed
      * @throws \Illuminate\Http\Client\RequestException
      */
-    public function captureAllInOne($userId, $partnerCode, $requestId, $orderId, $amount)
+    public function captureAllInOne($partnerCode, $orderId, $amount)
     {
         $params = [
-            'user_id' => $userId,
             'partner_code' => $partnerCode,
-            'request_id' => $requestId,
             'order_id' => $orderId,
             'amount' => $amount,
         ];
