@@ -7,4 +7,7 @@ return [
         'client_id' => env('MOMO_OAUTH_CLIENT_ID'),
         'client_secret' => env('MOMO_OAUTH_CLIENT_SECRET'),
     ],
+    'aio' => [
+        'ipn_url' => env('MOMO_AIO_IPN_URL'),
+    ],
 ];
