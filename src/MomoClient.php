@@ -3,8 +3,9 @@
 namespace Momo\SDK;
 
 use Illuminate\Http\Client\PendingRequest;
-use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Momo\SDK\Models\AllInOneIpnResponse;
+use Momo\SDK\Models\Payment;
 use OAuth2ClientCredentials\OAuthClient;
 
 class MomoClient
@@ -34,7 +35,7 @@ class MomoClient
 
     /**
      * @param callable $handler
-     * @return Response
+     * @return \Illuminate\Http\Client\Response
      * @throws \Illuminate\Http\Client\RequestException
      */
     private function request($handler)
@@ -68,7 +69,7 @@ class MomoClient
      * @param string $orderInfo
      * @param string $redirectUrl
      * @param string|null $ipnUrl
-     * @return array|false|mixed
+     * @return false|\Momo\SDK\Models\Payment
      * @throws \Illuminate\Http\Client\RequestException
      */
     public function createAllInOne($orderId, $amount, $orderInfo, $redirectUrl, $ipnUrl = null)
@@ -90,12 +91,12 @@ class MomoClient
             return false;
         }
 
-        return $response->json();
+        return Payment::fromArray($response->json());
     }
 
     /**
      * @param array $params
-     * @return array|false|mixed
+     * @return false|\Momo\SDK\Models\AllInOneIpnResponse
      * @throws \Illuminate\Http\Client\RequestException
      */
     public function ipnAllInOne($params)
@@ -125,14 +126,14 @@ class MomoClient
             return false;
         }
 
-        return $response->json();
+        return AllInOneIpnResponse::fromArray($response->json());
     }
 
     /**
      * @param string $partnerCode
      * @param string $orderId
      * @param int $amount
-     * @return array|false|mixed
+     * @return false|\Momo\SDK\Models\Payment
      * @throws \Illuminate\Http\Client\RequestException
      */
     public function captureAllInOne($partnerCode, $orderId, $amount)
@@ -152,6 +153,6 @@ class MomoClient
             return false;
         }
 
-        return $response->json();
+        return Payment::fromArray($response->json());
     }
 }
