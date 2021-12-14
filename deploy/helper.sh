@@ -40,7 +40,7 @@ function pack_source {
 }
 
 function composer_install {
-    composer install --quiet --no-ansi --no-dev --no-interaction --optimize-autoloader
+    composer install --quiet --no-ansi --no-dev --no-interaction --optimize-autoloader --ignore-platform-reqs
 }
 
 function write_version {

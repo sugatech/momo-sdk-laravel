@@ -5,9 +5,12 @@ ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # includes
 source ${ROOT_DIR}/helper.sh
 
+# vars
+current_branch=$(git branch --show-current)
+
 # args
 version=$1
-git_branch=$(get_arg $2 develop)
+git_branch=$(get_arg $2 $current_branch)
 
 # checkout
 git checkout ${git_branch}
