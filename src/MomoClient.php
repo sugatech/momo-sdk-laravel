@@ -6,6 +6,7 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Momo\SDK\Models\AllInOneIpnResponse;
 use Momo\SDK\Models\Payment;
+use Momo\SDK\Models\RefundPayment;
 use OAuth2ClientCredentials\OAuthClient;
 
 class MomoClient
@@ -154,5 +155,52 @@ class MomoClient
         }
 
         return Payment::fromArray($response->json());
+    }
+
+    public function refundAllInOne($orderId, $refundPaymentId, $amount, $description)
+    {
+        $params = [
+            'order_id' => $orderId,
+            'refund_payment_id' => $refundPaymentId,
+            'amount' => $amount,
+            'description' => $description,
+        ];
+
+        $response = $this->request(function (PendingRequest $request) use ($params) {
+            return $request->asJson()
+                ->post($this->getUrl('/payment/aio/refund'), $params);
+        });
+
+        if (!$response->successful()) {
+            return false;
+        }
+
+        return RefundPayment::fromArray($response->json());
+    }
+
+    public function getPaymentAllInOne($paymentId)
+    {
+        $response = $this->request(function (PendingRequest $request) use ($paymentId) {
+            return $request->get($this->getUrl('/payment/aio/payments/id/' . $paymentId));
+        });
+
+        if (!$response->successful()) {
+            return false;
+        }
+
+        return $response->json() ? Payment::fromArray($response->json()) : null;
+    }
+
+    public function getRefundPaymentAllInOne($refundPaymentId)
+    {
+        $response = $this->request(function (PendingRequest $request) use ($refundPaymentId) {
+            return $request->get($this->getUrl('/payment/aio/payments/refunds/id/' . $refundPaymentId));
+        });
+
+        if (!$response->successful()) {
+            return false;
+        }
+
+        return $response->json() ? RefundPayment::fromArray($response->json()) : null;
     }
 }
