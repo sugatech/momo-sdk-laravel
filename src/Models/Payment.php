@@ -1,6 +1,8 @@
-<?php declare(strict_types=1);
+<?php declare (strict_types = 1);
 
 namespace Momo\SDK\Models;
+
+use Illuminate\Support\Collection;
 
 class Payment
 {
@@ -54,7 +56,12 @@ class Payment
      */
     public $updatedAt;
 
-    public function __construct($id, $status, $orderId, $amount, $payUrl, $deepLink, $qrCodeUrl, $type, $createdAt, $updatedAt)
+    /**
+     * @var Collection
+     */
+    public $refundPayments;
+
+    public function __construct($id, $status, $orderId, $amount, $payUrl, $deepLink, $qrCodeUrl, $type, $createdAt, $updatedAt, $refundPayments)
     {
         $this->id = $id;
         $this->status = $status;
@@ -66,13 +73,14 @@ class Payment
         $this->type = $type;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
+        $this->refundPayments = $refundPayments;
     }
 
     /**
      * @param array $array
      * @return \Momo\SDK\Models\Payment
      */
-    static public function fromArray($array)
+    public static function fromArray($array)
     {
         return new Payment(
             @$array['id'],
@@ -84,7 +92,14 @@ class Payment
             @$array['qr_code_url'],
             @$array['type'],
             @$array['created_at'],
-            @$array['updated_at']
+            @$array['updated_at'],
+            @$array['refund_payments'] ?
+            collect(
+                array_map(function ($refundPayment) {
+                    return RefundPayment::fromArray($refundPayment);
+                }, $array['refund_payments'])
+            )
+            : null,
         );
     }
 
@@ -104,6 +119,7 @@ class Payment
             'type' => $this->type,
             'created_at' => $this->createdAt,
             'updated_at' => $this->updatedAt,
+            'refund_payments' => $this->refundPayments?->toArray(),
         ];
     }
 }
