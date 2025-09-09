@@ -73,7 +73,7 @@ class MomoClient
      * @return false|\Momo\SDK\Models\Payment
      * @throws \Illuminate\Http\Client\RequestException
      */
-    public function createAllInOne($orderId, $amount, $orderInfo, $redirectUrl, $ipnUrl = null)
+    public function createAllInOne($orderId, $amount, $orderInfo, $redirectUrl, $ipnUrl = null, $terminalType = null)
     {
         $params = [
             'order_id' => $orderId,
@@ -81,6 +81,7 @@ class MomoClient
             'order_info' => $orderInfo,
             'redirect_url' => $redirectUrl,
             'ipn_url' => $ipnUrl ?: config('momo.aio.ipn_url'),
+            'terminal_type' => $terminalType,
         ];
 
         $response = $this->request(function (PendingRequest $request) use ($params) {
